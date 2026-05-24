@@ -1,0 +1,109 @@
+:root {
+    --bg: #F5F2EB;
+    --surface: #FFFFFF;
+    --surface2: #EDE9DF;
+    --accent: #1A3A2A;
+    --accent-light: #2D6147;
+    --accent-muted: #4E8A6A;
+    --gold: #C8922A;
+    --gold-light: #F0D9A8;
+    --text: #1A1A18;
+    --text-muted: #5A5A55;
+    --text-faint: #9A9A92;
+    --border: #D8D4C8;
+    --user-bubble: #1A3A2A;
+    --bot-bubble: #FFFFFF;
+    --radius: 16px;
+    --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--text);
+}
+
+header {
+    background: var(--accent);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon {
+    width: 36px; height: 36px; background: var(--gold);
+    border-radius: 10px; display: flex; align-items: center;
+    justify-content: center; font-size: 18px;
+}
+.logo-text { font-family: 'DM Serif Display', serif; font-size: 20px; color: #fff; }
+.logo-text span { color: var(--gold-light); }
+
+.header-badge {
+    font-size: 12px; background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.75); padding: 4px 12px; border-radius: 20px;
+}
+
+.layout { flex: 1; display: flex; max-width: 1100px; margin: 0 auto; width: 100%; }
+
+.sidebar { width: 260px; padding: 2rem 1.25rem; border-right: 1px solid var(--border); }
+.sidebar-title { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; }
+
+.quick-btn {
+    width: 100%; text-align: left; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px 12px; font-size: 13px; cursor: pointer; margin-bottom: 6px;
+    transition: all 0.15s; display: flex; gap: 8px;
+}
+.quick-btn:hover { background: var(--accent); color: #fff; transform: translateX(2px); }
+
+.school-info-box {
+    background: var(--gold-light); border: 1px solid #D4A84A;
+    border-radius: var(--radius-sm); padding: 12px; font-size: 12px; color: #3A2408;
+}
+
+.chat-area { flex: 1; display: flex; flex-direction: column; }
+.messages {
+    flex: 1; padding: 2rem 1.5rem; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 1.25rem;
+    max-height: calc(100vh - 160px);
+}
+
+.welcome-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem; text-align: center;
+    max-width: 460px; margin: 1rem auto;
+}
+
+.msg-row { display: flex; gap: 10px; animation: msgIn 0.2s ease; }
+@keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.msg-row.user { flex-direction: row-reverse; }
+
+.avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+.avatar.bot { background: var(--accent); color: #fff; }
+.avatar.user { background: var(--gold); color: #3A2408; }
+
+.bubble { max-width: 72%; padding: 12px 16px; border-radius: var(--radius); font-size: 14px; line-height: 1.6; }
+.bubble.bot { background: var(--bot-bubble); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+.bubble.user { background: var(--user-bubble); color: #fff; border-bottom-right-radius: 4px; }
+
+.input-bar { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+.input-wrap { flex: 1; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 0 12px; }
+textarea { width: 100%; border: none; outline: none; padding: 12px 0; resize: none; font-family: inherit; }
+.send-btn { width: 44px; height: 44px; background: var(--accent); border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.send-btn svg { width: 18px; height: 18px; fill: #fff; }
+
+.setup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.setup-card { background: var(--surface); padding: 2rem; border-radius: var(--radius); max-width: 420px; width: 100%; }
+.setup-card input, .setup-card textarea { width: 100%; margin-bottom: 1rem; padding: 10px; border: 1px solid var(--border); border-radius: 4px; }
+.setup-btn { width: 100%; background: var(--accent); color: #fff; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
