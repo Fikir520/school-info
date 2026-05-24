@@ -26,9 +26,9 @@
     <div class="setup-card">
         <div style="font-size:32px; margin-bottom:12px;">⚙️</div>
         <h2>Set up SchoolDesk AI</h2>
-        <p>Enter your Google Gemini API key and customize your school's data.</p>
+        <p>Enter your  API key and customize your school's data.</p>
 
-        <label class="label">Gemini API Key</label>
+        <label class="label">openrouter API Key</label>
         <input type="password" id="apiKeyInput" placeholder="AIza..." />
 
         <label class="label">School Name</label>
@@ -38,8 +38,8 @@
         <textarea id="knowledgeInput" placeholder="Paste your school details here: office hours, registrar room numbers, deadlines..."></textarea>
 
         <button class="setup-btn" onclick="saveSetup()">Launch SchoolDesk AI →</button>
-         <!-- we will do te api key here the free api are not working for us -->
-        <p class="tip">Get a free key at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></p>
+
+
     </div>
 </div>
 
@@ -75,6 +75,9 @@
         <div class="school-info-box">
             <strong>💡 Fellowship Demo Mode</strong>
             <p style="margin-top:4px;">Log out or refresh to re-configure campus knowledge systems via the Admin Panel.</p>
+            <button class="quick-btn" onclick="toggleHistoryDrawer()" style="background: var(--surface2); margin-top: 20px;">
+    <span class="q-icon">📜</span> View Chat History
+</button>
         </div>
     </aside>
 
@@ -102,5 +105,18 @@
 </div>
 
 <script src="school.js"></script>
+<div id="historyDrawer" class="setup-overlay" style="display: none; justify-content: flex-end;">
+    <div class="setup-card" style="max-width: 400px; height: 100%; border-radius: 0; display: flex; flex-direction: column; animation: slideIn 0.3s ease;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3>Past Conversations</h3>
+            <button onclick="toggleHistoryDrawer()" style="background: none; border: none; font-size: 20px; cursor: pointer;">✕</button>
+        </div>
+        <div id="historyDrawerLog" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px;">
+            
+        </div>
+        <button onclick="clearSavedHistory()" style="background: #8A2E2E; color: white; padding: 10px; border: none; border-radius: var(--radius-sm); margin-top: 15px; cursor: pointer; font-weight: 600;">Clear All History</button>
+    </div>
+</div>
+
 </body>
 </html>
