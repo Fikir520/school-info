@@ -1,20 +1,22 @@
 let API_KEY = localStorage.getItem('sd_key') || ''; 
 
-const DEFAULT_SCHOOL = "st.marys university";
+const DEFAULT_SCHOOL = "Addis Ababa Academy";
 const DEFAULT_KB = `
-- Registrar Office: Room 02. Hours: Mon-Fri, 8:30 AM - 5:00 PM.
+- Registrar Office: Room 102. Hours: Mon-Fri, 8:30 AM - 5:00 PM.
 - Transcripts: Request via portal. Processing takes 3-5 business days.
-- Library: main cumpas building ground floor. Open 8:00 AM - 10:00 PM.
+- Library: North Block. Open 8:00 AM - 10:00 PM.
 - Deadlines: Registration ends this Friday.
-- Facilities: Cafeteria is in the main campus building 1st floor.
+- Facilities: Cafeteria is in the East Wing.
 `;
 
 let SCHOOL_NAME = localStorage.getItem('sd_school') || DEFAULT_SCHOOL;
 let KNOWLEDGE_BASE = localStorage.getItem('sd_kb') || DEFAULT_KB;
 let conversationHistory = [];
+let savedChatLog = JSON.parse(localStorage.getItem('sd_persistent_log')) || [];
 
 window.addEventListener('load', () => {
     document.getElementById('schoolBadge').textContent = SCHOOL_NAME;
+    renderHistoryDrawer();
 });
 
 function handleLogin(role) {
@@ -78,6 +80,7 @@ async function sendMessage() {
     if (welcome) welcome.style.display = 'none';
 
     addMessage('user', text);
+    logToHistoryData('user', text);
     input.value = '';
     input.style.height = 'auto';
 
@@ -91,12 +94,12 @@ async function sendMessage() {
                 'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-               "model": "openrouter/free",
+                "model": "openrouter/free",
                 "messages": [
                     { "role": "system", "content": systemPrompt },
                     ...conversationHistory.map(msg => ({
-                        role: msg.role === 'model' ? 'assistant' : 'user',
-                        content: msg.parts[0].text
+                        role: msg.role === 'model' || msg.role === 'assistant' ? 'assistant' : 'user',
+                        content: msg.parts ? msg.parts[0].text : msg.content
                     })),
                     { "role": "user", "content": text }
                 ]
@@ -109,6 +112,7 @@ async function sendMessage() {
         conversationHistory.push({ role: 'user', parts: [{ text: text }] });
         conversationHistory.push({ role: 'model', parts: [{ text: botReply }] });
 
+        logToHistoryData('bot', botReply);
         addMessage('bot', botReply);
     } catch (err) {
         addMessage('bot', "❌ Error connecting to OpenRouter.");
@@ -122,6 +126,47 @@ function addMessage(role, text) {
     div.innerHTML = `<div class="bubble ${role}">${text}</div>`;
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
+}
+
+function logToHistoryData(sender, text) {
+    savedChatLog.push({ sender, text, timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+    localStorage.setItem('sd_persistent_log', JSON.stringify(savedChatLog));
+    renderHistoryDrawer();
+}
+
+function renderHistoryDrawer() {
+    const container = document.getElementById('historyDrawerLog');
+    if (!container) return;
+    container.innerHTML = '';
+    
+    if (savedChatLog.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-faint); text-align: center; margin-top: 20px;">No saved history found.</p>`;
+        return;
+    }
+
+    savedChatLog.forEach(item => {
+        const div = document.createElement('div');
+        div.className = `history-item ${item.sender}`;
+        div.innerHTML = `<strong>${item.sender === 'user' ? 'You' : 'Assistant'}</strong> <span style="font-size:10px; color:var(--text-faint); float:right;">${item.timestamp}</span><p style="margin-top:4px;">${item.text}</p>`;
+        container.appendChild(div);
+    });
+}
+
+function toggleHistoryDrawer() {
+    const drawer = document.getElementById('historyDrawer');
+    if (drawer.style.display === 'none') {
+        drawer.style.display = 'flex';
+    } else {
+        drawer.style.display = 'none';
+    }
+}
+
+function clearSavedHistory() {
+    if (confirm("Are you sure you want to permanently clear your chat logs?")) {
+        savedChatLog = [];
+        localStorage.removeItem('sd_persistent_log');
+        renderHistoryDrawer();
+    }
 }
 
 function autoResize(el) {
